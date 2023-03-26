@@ -1,0 +1,49 @@
+//---------------------------------------------------------------------------
+
+
+#pragma hdrstop
+
+#include "UDM.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma classgroup "Vcl.Controls.TControl"
+#pragma link "frxClass"
+#pragma link "frxDBSet"
+#pragma resource "*.dfm"
+TDM *DM;
+//---------------------------------------------------------------------------
+__fastcall TDM::TDM(TComponent* Owner)
+	: TDataModule(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+
+
+
+
+void __fastcall TDM::frxReportMediaGetValue(const UnicodeString VarName, Variant &Value)
+
+{
+	 if(CompareText(VarName, "GRUPA")==0) {Value=DM->Qgrupa->FieldByName("GRUPA")->AsString;}
+	 if(CompareText(VarName, "MEDIA")==0) {Value=DM->QRaportMedia->FieldByName("MEDIA_GRUPA")->AsFloat;}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TDM::frxReportExaminareGetValue(const UnicodeString VarName, Variant &Value)
+
+{
+	 if(DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 10) {Value="A";}
+	   else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 9) {Value="B";} 
+		 else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 8) {Value="C";}
+		   else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 7) {Value="D";}
+			else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 6 
+					  || DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 5) {Value="E";}
+			   else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 4) {Value="FX";}
+
+				 else if (DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 3 
+						  || DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 2 
+							|| DM->QRaportDisciplina->FieldByName("NOTA")->AsInteger == 1) {Value="F";}	
+}			   
+//---------------------------------------------------------------------------
+

@@ -1,0 +1,512 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "UMain.h"
+#include "UDM.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+TDateTime DT;
+int GRUPA_ID, STUDENT_ID, LECTOR_ID, EXAMINARE_ID;
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::SpeedButton3Click(TObject *Sender)
+{
+    Application->Terminate();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton1Click(TObject *Sender)
+{
+	if ( (Edit1->Text!="") && (Edit2->Text!="") ) {
+
+        DM->QAutentificare->Close();
+		DM->QAutentificare->ParamByName("LOGGIN")->AsString = Edit1->Text;
+		DM->QAutentificare->ParamByName("PASS")->AsString = Edit2->Text;
+		DM->QAutentificare->Open();
+
+			if (!DM->QAutentificare->IsEmpty()) {
+				LECTOR_ID = DM->QAutentificare->FieldByName("LECTOR_ID")->AsInteger;
+                EXAMINARE_ID = DM->QAutentificare->FieldByName("EXAMINARE_ID")->AsInteger;
+
+				Autentificare->TabVisible=false;
+				Manager->TabVisible=true;
+
+				Main_C->TabVisible=true;
+                Ins_C->TabVisible=false;
+				Edit_C->TabVisible=false;
+
+				DM->Qstudent->Close();
+				DM->Qstudent->ParamByName("LECTOR_ID")->AsInteger = LECTOR_ID;
+				DM->Qstudent->ParamByName("EXAMINARE_ID")->AsInteger = EXAMINARE_ID;
+				DM->Qstudent->Open();
+
+				DM->Qgrupa->Close();
+                DM->Qgrupa->Open();
+
+			}  else {
+				ShowMessage("Introduceti corect datele!");
+			}
+
+	} else {
+		ShowMessage("Introduceti toate datele!");
+    }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::FormShow(TObject *Sender)
+{
+	Autentificare->TabVisible=true;
+	Manager->TabVisible=false;
+	Grupa->TabVisible=false;
+	Cautare->TabVisible=false;
+    Examinare->TabVisible=false;
+
+	Label1->Caption=DT.CurrentTime();
+	Label2->Caption=DT.CurrentDate();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton10Click(TObject *Sender)
+{
+	Main_C->TabVisible=true;
+    Ins_C->TabVisible=false;
+	Edit_C->TabVisible=false;
+
+	DM->QIdentificare->Close();
+	DM->QIdentificare->ParamByName("NUME")->AsString = Edit6->Text;
+	DM->QIdentificare->ParamByName("LECTOR")->AsInteger = LECTOR_ID;
+	DM->QIdentificare->Open();
+
+	if (!DM->QIdentificare->IsEmpty()) {
+
+		if( (Edit3->Text!="") && (Edit4->Text!="") &&
+		(Edit5->Text!="") && (Edit6->Text!="") &&
+		(CheckBox1->Checked || CheckBox2->Checked) ) {
+
+			bool gender = 0;
+
+			if (CheckBox1->Checked ) {
+			   gender = 1;
+			}
+			DM->Student_ins->Close();
+			DM->Student_ins->ParamByName("NUME")->AsString=Edit3->Text;
+			DM->Student_ins->ParamByName("PRENUME")->AsString=Edit4->Text;
+			DM->Student_ins->ParamByName("DATA_NASTERII")->AsDate=DateTimePicker1->Date;
+			DM->Student_ins->ParamByName("IDNP")->AsString=Edit5->Text;
+			DM->Student_ins->ParamByName("GEN")->AsBoolean=gender;
+			DM->Student_ins->ParamByName("GRUPA_ID")->AsInteger=GRUPA_ID;
+			DM->Student_ins->ExecSQL();
+
+			DM->Qstudent->Close();
+			DM->Qstudent->Open();
+
+			SpeedButton12->Click();
+
+		} else ShowMessage("Nu este introdusa toata informatia!");
+
+
+	} else ShowMessage("Lectorul dat nu poate introduce studenti pentru alt lector!");
+
+
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::Edit7Change(TObject *Sender)
+{
+	 Ins_C->TabVisible=false;
+	 Grupa->TabVisible=true;
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::SpeedButton2Click(TObject *Sender)
+{
+	DM->Qgrupa->Close();
+	DM->Qgrupa->Open();
+
+	Manager->TabVisible=false;
+	Grupa->TabVisible=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton15Click(TObject *Sender)
+{
+	Main_C->TabVisible=false;
+	Ins_C->TabVisible=true;
+	Edit_C->TabVisible=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton5Click(TObject *Sender)
+{
+	Edit6->Text=DM->Qgrupa->FieldByName("GRUPA")->AsString;
+	Edit18->Text=DM->Qgrupa->FieldByName("GRUPA")->AsString;
+
+	GRUPA_ID=DM->Qgrupa->FieldByName("GRUPA_ID")->AsInteger;
+	Grupa->TabVisible=false;
+	Manager->TabVisible=true;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SpeedButton13Click(TObject *Sender)
+{
+	Main_C->TabVisible=false;
+	Ins_C->TabVisible=false;
+	Edit_C->TabVisible=true;
+
+	Edit18->Text=DM->Qstudent->FieldByName("GRUPA")->AsString;
+	Edit19->Text=DM->Qstudent->FieldByName("NUME")->AsString;
+	Edit21->Text=DM->Qstudent->FieldByName("PRENUME")->AsString;
+	DateTimePicker4->Date=DM->Qstudent->FieldByName("DATA_NASTERII")->AsString;
+	Edit22->Text=DM->Qstudent->FieldByName("IDNP")->AsString;
+
+	if (DM->Qstudent->FieldByName("GEN")->AsString == "MASCULIN") {
+		CheckBox3->Checked = true;
+	}  else {
+		CheckBox4->Checked = true;
+	}
+
+	GRUPA_ID=DM->Qstudent->FieldByName("GRUPA_ID")->AsInteger;
+	STUDENT_ID=DM->Qstudent->FieldByName("STUDENT_ID")->AsInteger;
+
+	Main_C->TabVisible = false;
+	Ins_C->TabVisible = false;
+	Edit_C->TabVisible = true;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SpeedButton8Click(TObject *Sender)
+{
+	Edit18->Clear();
+	Edit19->Clear();
+	Edit21->Clear();
+	Edit22->Clear();
+
+	CheckBox3->Checked=false;
+	CheckBox4->Checked=false;
+
+	Main_C->TabVisible = true;
+	Ins_C->TabVisible = false;
+	Edit_C->TabVisible = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton9Click(TObject *Sender)
+{
+
+	DM->QIdentificare->Close();
+	DM->QIdentificare->ParamByName("NUME")->AsString = Edit18->Text;
+	DM->QIdentificare->Open();
+
+	if (!DM->QIdentificare->IsEmpty()) {
+
+		if( (Edit18->Text!="") && (Edit19->Text!="") &&
+		(Edit21->Text!="") && (Edit22->Text!="") &&
+		(CheckBox3->Checked || CheckBox4->Checked) )
+		{
+			bool gender = 0;
+
+			if (CheckBox3->Checked ) {
+			   gender = 1;
+			} else gender = 0;
+
+			DM->Student_upd->Close();
+			DM->Student_upd->ParamByName("NUME")->AsString=Edit19->Text;
+			DM->Student_upd->ParamByName("PRENUME")->AsString=Edit21->Text;
+			DM->Student_upd->ParamByName("DATA_NASTERII")->AsDate=DateTimePicker4->Date;
+			DM->Student_upd->ParamByName("IDNP")->AsString=Edit22->Text;
+			DM->Student_upd->ParamByName("GEN")->AsBoolean=gender;
+			DM->Student_upd->ParamByName("GRUPA_ID")->AsInteger=GRUPA_ID;
+			DM->Student_upd->ParamByName("STUDENT_ID")->AsInteger=STUDENT_ID;
+			DM->Student_upd->ExecSQL();
+
+			DM->Qstudent->Close();
+			DM->Qstudent->Open();
+
+			SpeedButton8->Click();
+		} else ShowMessage("Nu este introdusa toata informatia!");
+
+	} else ShowMessage("Lectorul dat nu poate introduce studenti pentru alt lector!");
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton12Click(TObject *Sender)
+{
+	Edit3->Clear();
+	Edit4->Clear();
+	Edit5->Clear();
+	Edit6->Clear();
+
+	CheckBox1->Checked=false;
+	CheckBox2->Checked=false;
+
+	Main_C->TabVisible = true;
+	Ins_C->TabVisible = false;
+	Edit_C->TabVisible = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton4Click(TObject *Sender)
+{
+	DM->Qgrupa->Close();
+	DM->Qgrupa->Open();
+
+	Manager->TabVisible=false;
+	Grupa->TabVisible=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton14Click(TObject *Sender)
+{
+	if (!DM->Qstudent->IsEmpty()) {
+
+		DM->Student_del->Close();
+		DM->Student_del->ParamByName("STUDENT_ID")->AsInteger =
+			DM->Qstudent->FieldByName("STUDENT_ID")->AsInteger;
+		DM->Student_del->ExecSQL();
+
+		DM->Qstudent->Close();
+		DM->Qstudent->Open();
+	}
+
+	else ShowMessage("Nu sunt date de eliminat!");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton6Click(TObject *Sender)
+{
+	Grupa->TabVisible=false;
+	Manager->TabVisible=true;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SpeedButton7Click(TObject *Sender)
+{
+	Manager->TabVisible=false;
+    Cautare->TabVisible=true;
+
+
+	DM->QLiber->Close();
+	DM->QLiber->SQL->Clear();
+	DM->QLiber->SQL->Add("SELECT * FROM FACULTATE");
+	DM->QLiber->Open();
+	ComboBox4->Clear();
+
+	while(!DM->QLiber->Eof)
+	{
+		ComboBox4->Items->Add(DM->QLiber->FieldByName("NUME")->AsString);
+		DM->QLiber->Next();
+	}
+
+	DM->QLiber->Close();
+	DM->QLiber->SQL->Clear();
+	DM->QLiber->SQL->Add("SELECT * FROM SPECIALITATE");
+	DM->QLiber->Open();
+	ComboBox5->Clear();
+
+	while(!DM->QLiber->Eof)
+	{
+		ComboBox5->Items->Add(DM->QLiber->FieldByName("NUME")->AsString);
+		DM->QLiber->Next();
+	}
+
+	DM->QLiber->Close();
+	DM->QLiber->SQL->Clear();
+	DM->QLiber->SQL->Add("SELECT * FROM GRUPA");
+	DM->QLiber->Open();
+	ComboBox6->Clear();
+
+	while(!DM->QLiber->Eof)
+	{
+		ComboBox6->Items->Add(DM->QLiber->FieldByName("NUME")->AsString);
+		DM->QLiber->Next();
+	}
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::ComboBox4KeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+    Key = 0;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::ComboBox5KeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+    Key=0;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::ComboBox6KeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+    Key=0;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton11Click(TObject *Sender)
+{
+	 Cautare->TabVisible=false;
+	 Manager->TabVisible=true;
+
+	 CheckBox11->Checked = false;
+	 CheckBox12->Checked = false;
+	 CheckBox13->Checked = false;
+	 CheckBox14->Checked = false;
+	 CheckBox15->Checked = false;
+	 CheckBox16->Checked = false;
+
+	 Edit9->Clear();
+	 Edit10->Clear();
+	 DateTimePicker3->DateTime.CurrentDate();
+	 ComboBox4->Clear();
+	 ComboBox5->Clear();
+	 ComboBox6->Clear();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton16Click(TObject *Sender)
+{
+	DM->QCautare->Close();
+	DM->QCautare->SQL->Clear();
+
+	DM->QCautare->SQL->Add("SELECT S.NUME, S.PRENUME, S.DATA_NASTERII, F.NUME, SS.NUME, G.NUME ");
+	DM->QCautare->SQL->Add("FROM STUDENT S INNER JOIN GRUPA G ON S.GRUPA_ID = G.GRUPA_ID ");
+	DM->QCautare->SQL->Add("INNER JOIN SPECIALITATE SS ON SS.SPECIALITATE_ID = G.SPECIALITATE_ID ");
+	DM->QCautare->SQL->Add("INNER JOIN FACULTATE F ON F.FACULTATE_ID = SS.FACULTATE_ID ");
+	DM->QCautare->SQL->Add("INNER JOIN EXAMINARE EX ON EX.SPECIALITATEA_ID = SS.SPECIALITATE_ID ");
+	DM->QCautare->SQL->Add("INNER JOIN LECTOR L ON L.LECTOR_ID = EX.LECTOR_ID ");
+	DM->QCautare->SQL->Add("WHERE L.LECTOR_ID = :LECTOR_ID ");
+	DM->QCautare->SQL->Add(" AND EX.EXAMINARE_ID = :EXAMINARE_ID ");
+	DM->QCautare->ParamByName("LECTOR_ID")->AsInteger = LECTOR_ID;
+	DM->QCautare->ParamByName("EXAMINARE_ID")->AsInteger = EXAMINARE_ID;
+
+	if (CheckBox11->Checked) {
+
+		DM->QCautare->SQL->Add(" AND S.NUME = :NUME ");
+		DM->QCautare->ParamByName("NUME")->AsString = Edit9->Text;
+	}
+
+
+	if (CheckBox12->Checked) {
+
+		DM->QCautare->SQL->Add(" AND S.PRENUME = :PRENUME" );
+		DM->QCautare->ParamByName("PRENUME")->AsString = Edit10->Text;
+	}
+
+	if (CheckBox13->Checked) {
+
+		DM->QCautare->SQL->Add(" AND S.DATA_NASTERII = :DATA_NASTERII" );
+		DM->QCautare->ParamByName("DATA_NASTERII")->AsDate = DateTimePicker3->Date.DateString();
+	}
+
+	if (CheckBox14->Checked) {
+
+		DM->QCautare->SQL->Add(" AND F.NUME = :FACULTATE" );
+		DM->QCautare->ParamByName("FACULTATE")->AsString = ComboBox4->Text;
+	}
+
+	if (CheckBox15->Checked) {
+
+		DM->QCautare->SQL->Add(" AND SS.NUME = :SPECIALITATE" );
+		DM->QCautare->ParamByName("SPECIALITATE")->AsString = ComboBox5->Text;
+	}
+
+	if (CheckBox16->Checked) {
+
+		DM->QCautare->SQL->Add(" AND G.NUME = :GRUPA" );
+		DM->QCautare->ParamByName("GRUPA")->AsString = ComboBox6->Text;
+	}
+
+	if (!CheckBox11->Checked && !CheckBox12->Checked && !CheckBox13->Checked && !CheckBox14->Checked
+		&&!CheckBox15->Checked && !CheckBox16->Checked ) {
+
+		ShowMessage("Introduceti cel putin un parametru pentru a efectua cautarea!");
+
+	} else {
+
+		DM->QCautare->Open();
+
+		if (DM->QCautare->IsEmpty()) {
+			  ShowMessage("Nu au fost gasiti studenti cu parametrii specificati!");
+		}
+
+	  }
+
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SpeedButton17Click(TObject *Sender)
+{
+	Manager->TabVisible = false;
+	Grupa->TabVisible = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton18Click(TObject *Sender)
+{
+	DM->QRaportMedia->Close();
+	DM->QRaportMedia->ParamByName("GRUPA")->AsString = DM->Qgrupa->FieldByName("GRUPA")->AsString;
+	DM->QRaportMedia->Open();
+
+	if (DM->QRaportMedia->IsEmpty()) {
+		ShowMessage("Din pacate inca nu sunt studenti in aceasta grupa!");
+
+	} else {
+        DM->frxReportMedia->ShowReport("true");
+    }
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::SpeedButton19Click(TObject *Sender)
+{
+	Manager->TabVisible = false;
+	Examinare->TabVisible = true;
+
+	DM->QDisciplina->Close();
+    DM->QDisciplina->Open();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::SpeedButton22Click(TObject *Sender)
+{
+	DM->QRaportDisciplina->Close();
+	DM->QRaportDisciplina->ParamByName("DISCIPLINA")->AsString = DM->QDisciplina->FieldByName("DISCIPLINA")->AsString;
+	DM->QRaportDisciplina->ParamByName("GRUPA")->AsString = DM->QDisciplina->FieldByName("GRUPA")->AsString;
+	DM->QRaportDisciplina->ParamByName("DATA_EXAMINARII")->AsDate = DM->QDisciplina->FieldByName("DATA_EXAMINARII")->AsDateTime.DateString();
+	DM->QRaportDisciplina->Open();
+
+	if (DM->QRaportDisciplina->IsEmpty()) {
+		ShowMessage("Din pacate nu sunt studenti din aceasta grupa ce trebuie sa sustina examenul la aceasta disciplina la data respectiva!");
+
+	} else {
+        DM->frxReportExaminare->ShowReport("true");
+    }
+}
+//---------------------------------------------------------------------------
+

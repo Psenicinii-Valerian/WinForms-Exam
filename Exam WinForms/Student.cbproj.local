@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/06/07 19:13:47.000.437,=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Unit2.cpp</Transaction>
+    <Transaction>2022/06/07 19:13:47.000.415,=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Project2PCH1.h</Transaction>
+    <Transaction>2022/10/26 18:15:36.000.992,=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>2022/10/26 18:15:36.000.968,=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Project2PCH1.h</Transaction>
+    <Transaction>2022/10/26 18:16:51.000.836,D:\DataBases\WinForms\Exam 1\UMain.cpp=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>2022/10/26 18:16:51.000.836,D:\DataBases\WinForms\Exam 1\UMain.dfm=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2022/10/26 18:16:51.000.836,D:\DataBases\WinForms\Exam 1\UMain.h=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.h</Transaction>
+    <Transaction>2022/10/26 18:16:55.000.854,D:\DataBases\WinForms\Exam 1\Project2PCH1.h=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Project2PCH1.h</Transaction>
+    <Transaction>2022/10/26 18:17:06.000.764,D:\DataBases\WinForms\Exam 1\Student.cbproj=C:\Users\Valerian\OneDrive\Documents\Embarcadero\Studio\Projects\Project2.cbproj</Transaction>
+    <Transaction>2022/10/26 18:17:06.000.748,D:\DataBases\WinForms\Exam 1\StudentPCH1.h=D:\DataBases\WinForms\Exam 1\Project2PCH1.h</Transaction>
+    <Transaction>2022/10/26 18:26:48.000.892,=D:\DataBases\WinForms\Exam 1\Unit1.cpp</Transaction>
+    <Transaction>2022/10/26 18:27:03.000.327,D:\DataBases\WinForms\Exam 1\Unit1.cpp=D:\DataBases\WinForms\Exam 1\UDM.cpp</Transaction>
+    <Transaction>2022/10/26 18:27:03.000.327,D:\DataBases\WinForms\Exam 1\Unit1.h=D:\DataBases\WinForms\Exam 1\UDM.h</Transaction>
+    <Transaction>2022/10/26 18:27:03.000.327,D:\DataBases\WinForms\Exam 1\Unit1.dfm=D:\DataBases\WinForms\Exam 1\UDM.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
